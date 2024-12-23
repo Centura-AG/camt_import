@@ -1,9 +1,11 @@
 app_name = "camt_import"
-app_title = "camt-Import"
+app_title = "camt Import"
 app_publisher = "Centura AG"
 app_description = "Module for importing and processing camt files from E-Banking systems."
 app_email = "info@centura.ch"
 app_license = "mit"
+
+doctype_js = {"Bank Reconciliation Tool" : "camt_import/accounts/doctype/bank_reconciliation_tool/centura_bank_reconciliation_tool.js"}
 
 # Apps
 # ------------------
