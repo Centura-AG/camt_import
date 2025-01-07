@@ -16,7 +16,6 @@ def import_camt(xml_file, company, bank_account):
         bank_statement_import = create_new_bank_statement_import(
             csv_file_doc, company, bank_account)
         bank_statement_import.start_import()
-        delete_csv_doc_and_file(csv_file_doc)
     except Exception as e:
         frappe.log_error(frappe.get_traceback(), _("CAMT Import Error"))
         frappe.throw(_("Error importing CAMT file: {0}").format(str(e)))
@@ -82,15 +81,6 @@ def create_new_bank_statement_import(csv_file_doc, company, bank_account):
     except Exception as e:
         frappe.throw(
             _("Error creating Bank Statement Import: {0}").format(str(e)))
-
-
-def delete_csv_doc_and_file(csv_doc):
-    try:
-        frappe.delete_doc("File", csv_doc.name, ignore_permissions=True)
-        os.remove(csv_doc.file_path)
-    except Exception as e:
-        frappe.throw(
-            _("Error deleting CSV file: {0}").format(str(e)))
 
 
 def get_namespace(element):
