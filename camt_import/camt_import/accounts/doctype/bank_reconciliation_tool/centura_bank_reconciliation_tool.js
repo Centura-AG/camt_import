@@ -3,9 +3,9 @@
 
 frappe.ui.form.on('Bank Reconciliation Tool', {
     refresh: function (frm) {
-        frm.add_custom_button(__('Import Data from Camt-File'), () => {
+        frm.add_custom_button(__('Import Data from camt-File'), () => {
             frappe.prompt({
-                label: 'Attach Camt-File',
+                label: 'Attach camt-File (ZIP or XML File)',
                 fieldtype: 'Attach',
                 fieldname: 'file',
                 reqd: 1
@@ -13,13 +13,13 @@ frappe.ui.form.on('Bank Reconciliation Tool', {
                 frappe.call({
                     method: 'camt_import.camt_import.accounts.doctype.bank_reconciliation_tool.centura_bank_reconciliation_tool.import_camt',
                     args: {
-                        xml_file: values.file,
+                        file: values.file,
                         company: frm.doc.company,
                         bank_account: frm.doc.bank_account
                     },
                     callback: function (r) {
                         if (!r.exc) {
-                            frappe.msgprint(__('camt File Imported Successfully'));
+                            frappe.msgprint(__('camt File Import started'));
                             frm.refresh();
                         }
                     },
