@@ -5,7 +5,6 @@ app_description = "Module for importing and processing camt files from E-Banking
 app_email = "info@centura.ch"
 app_license = "mit"
 
-doctype_js = {"Bank Reconciliation Tool" : "camt_import/accounts/doctype/bank_reconciliation_tool/centura_bank_reconciliation_tool.js"}
 
 # Apps
 # ------------------
@@ -27,8 +26,8 @@ doctype_js = {"Bank Reconciliation Tool" : "camt_import/accounts/doctype/bank_re
 # ------------------
 
 # include js, css files in header of desk.html
-# app_include_css = "/assets/camt_import/css/camt_import.css"
-# app_include_js = "/assets/camt_import/js/camt_import.js"
+app_include_css = "bank_reconciliation_beta.bundle.css"
+app_include_js = "bank_reconciliation_beta.bundle.js"
 
 # include js, css files in header of web template
 # web_include_css = "/assets/camt_import/css/camt_import.css"
@@ -85,7 +84,7 @@ doctype_js = {"Bank Reconciliation Tool" : "camt_import/accounts/doctype/bank_re
 # ------------
 
 # before_install = "camt_import.install.before_install"
-# after_install = "camt_import.install.after_install"
+after_install = "camt_import.install.after_install"
 
 # Uninstallation
 # ------------
@@ -131,9 +130,9 @@ doctype_js = {"Bank Reconciliation Tool" : "camt_import/accounts/doctype/bank_re
 # ---------------
 # Override standard doctype classes
 
-# override_doctype_class = {
-# 	"ToDo": "custom_app.overrides.CustomToDo"
-# }
+override_doctype_class = {
+	"Bank Transaction": "camt_import.overrides.bank_transaction.CustomBankTransaction"
+}
 
 # Document Events
 # ---------------
@@ -244,3 +243,4 @@ doctype_js = {"Bank Reconciliation Tool" : "camt_import/accounts/doctype/bank_re
 # 	"Logging DocType Name": 30  # days to retain logs
 # }
 
+get_matching_queries = "camt_import.camt_import.doctype.bank_sync.bank_sync.get_matching_queries"
