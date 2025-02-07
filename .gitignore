@@ -4,6 +4,5 @@
 *.swp
 dist/
 tags
-banking/docs/current
 node_modules/
 __pycache__
