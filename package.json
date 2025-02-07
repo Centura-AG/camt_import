@@ -1,0 +1,13 @@
+{
+  "name": "campt_import",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "prettier": "npx prettier . --write"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "prettier": "3.4.2"
+  }
+}

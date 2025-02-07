@@ -1,9 +1,13 @@
 # Copyright (c) 2025, Centura AG and contributors
 # For license information, please see license.txt
+
+import os
+import csv
 import json
+import zipfile
 import datetime
 from typing import Union
-
+import xml.etree.ElementTree as ET
 import frappe
 from frappe import _
 from frappe.model.document import Document
@@ -17,7 +21,7 @@ from erpnext.accounts.doctype.bank_transaction.bank_transaction import (
 	get_total_allocated_amount,
 )
 from erpnext.accounts.utils import get_account_currency
-from camt_import.camt_import.doctype.bank_sync.utils import (
+from camt_import.camt_import.doctype.transaction_matching_tool.utils import (
 	amount_rank_condition,
 	get_description_match_condition,
 	ref_equality_condition,
@@ -28,7 +32,7 @@ from pypika import Order
 MAX_QUERY_RESULTS = 150
 
 
-class BankSync(Document):
+class TransactionMatchingTool(Document):
 	pass
 
 
@@ -1471,7 +1475,7 @@ def extract_xml_files(file):
 def parse_xml_to_csv(xml_file_list, company, bank_account):
 	"""Parse XML files to generate a CSV document."""
 	try:
-		timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
+		timestamp = datetime.datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
 		site_path = frappe.utils.get_site_path()
 		csv_file_path = os.path.join(site_path, "private", "files", f"camt-{timestamp}.csv")
 

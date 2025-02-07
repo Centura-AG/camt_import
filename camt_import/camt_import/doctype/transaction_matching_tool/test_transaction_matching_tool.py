@@ -12,18 +12,18 @@ EXTRA_TEST_RECORD_DEPENDENCIES = []  # eg. ["User"]
 IGNORE_TEST_RECORD_DEPENDENCIES = []  # eg. ["User"]
 
 
-class UnitTestBankSync(UnitTestCase):
+class UnitTestTransactionMatchingTool(UnitTestCase):
 	"""
-	Unit tests for BankSync.
+	Unit tests for TransactionMatchingTool.
 	Use this class for testing individual functions and methods.
 	"""
 
 	pass
 
 
-class IntegrationTestBankSync(IntegrationTestCase):
+class IntegrationTestTransactionMatchingTool(IntegrationTestCase):
 	"""
-	Integration tests for BankSync.
+	Integration tests for TransactionMatchingTool.
 	Use this class for testing interactions between multiple components.
 	"""
 

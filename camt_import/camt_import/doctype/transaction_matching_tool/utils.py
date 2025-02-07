@@ -72,4 +72,3 @@ def get_description_match_condition(
 			)
 			.else_(0)
 		)
-

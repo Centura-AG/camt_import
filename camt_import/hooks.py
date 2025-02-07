@@ -243,4 +243,4 @@ override_doctype_class = {
 # 	"Logging DocType Name": 30  # days to retain logs
 # }
 
-get_matching_queries = "camt_import.camt_import.doctype.bank_sync.bank_sync.get_matching_queries"
+get_matching_queries = "camt_import.camt_import.doctype.transaction_matching_tool.transaction_matching_tool.get_matching_queries"
