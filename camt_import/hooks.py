@@ -84,7 +84,7 @@ app_include_js = "bank_reconciliation_beta.bundle.js"
 # ------------
 
 # before_install = "camt_import.install.before_install"
-after_install = "camt_import.install.after_install"
+# after_install = "camt_import.install.after_install"
 
 # Uninstallation
 # ------------
