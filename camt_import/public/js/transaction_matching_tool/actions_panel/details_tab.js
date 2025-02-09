@@ -1,8 +1,8 @@
-frappe.provide('erpnext.accounts.bank_reconciliation');
+frappe.provide('erpnext.accounts.transaction_matching_tool');
 
-erpnext.accounts.bank_reconciliation.DetailsTab = class DetailsTab {
+erpnext.accounts.transaction_matching_tool.DetailsTab = class DetailsTab {
   constructor(opts) {
-    $.extend(this, opts);
+    Object.assign(this, opts);
     this.make();
   }
 

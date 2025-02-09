@@ -1,6 +1,6 @@
-frappe.provide('erpnext.accounts.bank_reconciliation');
+frappe.provide('erpnext.accounts.transaction_matching_tool');
 
-erpnext.accounts.bank_reconciliation.PanelManager = class PanelManager {
+erpnext.accounts.transaction_matching_tool.PanelManager = class PanelManager {
   constructor(opts) {
     Object.assign(this, opts);
     this.make();
@@ -86,19 +86,23 @@ erpnext.accounts.bank_reconciliation.PanelManager = class PanelManager {
 
   render_list_panel() {
     this.$panel_wrapper.append(`
-			<div class="list-panel">
-				<div class="sort-by"></div>
-				<div class="list-container"></div>
-			</div>
-		`);
+        <div class="list-panel">
+            <div class="filter-section">
+                <div class="search-area p-2"></div>
+                <div class="sort-area d-flex align-items-center p-2"></div>
+            </div>
+            <div class="list-container"></div>
+        </div>
+    `);
 
+    this.make_search_field();
     this.render_sort_area();
     this.render_transactions_list();
   }
 
   render_actions_panel() {
     this.actions_panel =
-      new erpnext.accounts.bank_reconciliation.ActionsPanelManager({
+      new erpnext.accounts.transaction_matching_tool.ActionsPanelManager({
         $wrapper: this.$panel_wrapper,
         transaction: this.active_transaction,
         doc: this.doc,
@@ -107,34 +111,31 @@ erpnext.accounts.bank_reconciliation.PanelManager = class PanelManager {
   }
 
   render_sort_area() {
-    this.$sort_area = this.$panel_wrapper.find('.sort-by');
+    this.$sort_area = this.$panel_wrapper.find('.sort-area');
     this.$sort_area.append(`
-			<div class="sort-by-title"> ${__('Sort By')} </div>
-			<div class="sort-by-selector p-10"></div>
-		`);
+        <div class="sort-by-title mr-2">${__('Sort By')}</div>
+        <div class="sort-by-selector"></div>
+    `);
 
     var me = this;
     new frappe.ui.SortSelector({
-      parent: me.$sort_area.find('.sort-by-selector'),
-      args: {
-        sort_by: me.order_by || 'date',
-        sort_order: me.order_direction || 'asc',
-        options: [
-          { fieldname: 'date', label: __('Date') },
-          { fieldname: 'withdrawal', label: __('Withdrawal') },
-          { fieldname: 'deposit', label: __('Deposit') },
-          { fieldname: 'unallocated_amount', label: __('Unallocated Amount') }
-        ]
-      },
-      change: function (sort_by, sort_order) {
-        // Globally set the order used in the re-rendering of the list
-        me.order_by = sort_by || me.order_by || 'date';
-        me.order_direction = sort_order || me.order_direction || 'asc';
-        me.order = me.order_by + ' ' + me.order_direction;
-
-        // Re-render the list
-        me.init_panels();
-      }
+        parent: me.$sort_area.find('.sort-by-selector'),
+        args: {
+            sort_by: me.order_by || 'date',
+            sort_order: me.order_direction || 'asc',
+            options: [
+                { fieldname: 'date', label: __('Date') },
+                { fieldname: 'withdrawal', label: __('Withdrawal') },
+                { fieldname: 'deposit', label: __('Deposit') },
+                { fieldname: 'unallocated_amount', label: __('Unallocated Amount') }
+            ]
+        },
+        change: function (sort_by, sort_order) {
+            me.order_by = sort_by || me.order_by || 'date';
+            me.order_direction = sort_order || me.order_direction || 'asc';
+            me.order = me.order_by + ' ' + me.order_direction;
+            me.init_panels();
+        }
     });
   }
 
@@ -263,5 +264,39 @@ erpnext.accounts.bank_reconciliation.PanelManager = class PanelManager {
       this.active_transaction = null;
       this.render_no_transactions();
     }
+  }
+
+  make_search_field() {
+    let me = this;
+    this.$search_field = $(`
+        <div class="search-field">
+            <input type="text" 
+                class="form-control" 
+                placeholder="${__('Search in Description...')}"
+                style="width: 100%;">
+        </div>
+    `).appendTo(this.$panel_wrapper.find('.search-area'));
+
+    this.$search_input = this.$search_field.find('input');
+    
+    this.$search_input.on('input', frappe.utils.debounce(() => {
+        me.filter_by_description(me.$search_input.val());
+    }, 300));
+  }
+
+  filter_by_description(search_text) {
+    if (!search_text) {
+        // If search is empty, show all rows
+        this.$panel_wrapper.find('.transaction-row').show();  // Changed from bank-transaction-row to transaction-row
+        return;
+    }
+
+    search_text = search_text.toLowerCase();
+    
+    // Hide/show rows based on description match
+    this.$panel_wrapper.find('.transaction-row').each(function() {  // Changed from bank-transaction-row to transaction-row
+        const description = $(this).find('.description-value').text().toLowerCase();  // Changed to find description-value
+        $(this).toggle(description.includes(search_text));
+    });
   }
 };

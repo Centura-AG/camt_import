@@ -114,24 +114,25 @@
    "label": "Reconciliation Action Area"
   }
  ],
+ "hide_toolbar": 1,
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2025-02-07 14:34:57.421969",
+ "modified": "2025-02-09 14:11:43.285782",
  "modified_by": "Administrator",
  "module": "camt-Import",
  "name": "Transaction Matching Tool",
  "owner": "Administrator",
  "permissions": [
   {
-    "create": 1,
-    "delete": 1,
-    "email": 1,
-    "print": 1,
-    "read": 1,
-    "role": "System Manager",
-    "share": 1,
-    "write": 1
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "print": 1,
+   "read": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
   }
  ],
  "sort_field": "creation",
