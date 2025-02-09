@@ -1,6 +1,6 @@
-frappe.provide('erpnext.accounts.bank_reconciliation');
+frappe.provide('erpnext.accounts.transaction_matching_tool');
 
-erpnext.accounts.bank_reconciliation.CreateTab = class CreateTab {
+erpnext.accounts.transaction_matching_tool.CreateTab = class CreateTab {
   constructor(opts) {
     Object.assign(this, opts);
     this.make();
@@ -54,7 +54,7 @@ erpnext.accounts.bank_reconciliation.CreateTab = class CreateTab {
     let values = this.create_field_group.get_values();
     let document_type = values.document_type;
     let method =
-      'erpnext.accounts.doctype.bank_reconciliation_tool.bank_reconciliation_tool';
+      'camt_import.camt_import.doctype.transaction_matching_tool.transaction_matching_tool';
     let args = {
       bank_transaction_name: this.transaction.name,
       reference_number: values.reference_number,
@@ -78,7 +78,9 @@ erpnext.accounts.bank_reconciliation.CreateTab = class CreateTab {
       args = {
         ...args,
         entry_type: values.journal_entry_type,
-        second_account: values.second_account
+        second_account: values.second_account,
+        description: values.description,
+        attachments: values.attachments
       };
     }
 
@@ -109,7 +111,7 @@ erpnext.accounts.bank_reconciliation.CreateTab = class CreateTab {
     var me = this;
     frappe.call({
       method:
-        'erpnext.accounts.doctype.bank_reconciliation_tool.bank_reconciliation_tool.reconcile_voucher',
+        'camt_import.camt_import.doctype.transaction_matching_tool.transaction_matching_tool.reconcile_voucher',
       args: {
         transaction_name: this.transaction.name,
         amount: this.transaction.unallocated_amount,
@@ -155,7 +157,7 @@ erpnext.accounts.bank_reconciliation.CreateTab = class CreateTab {
         fieldname: 'document_type',
         fieldtype: 'Select',
         options: `Payment Entry\nJournal Entry`,
-        default: 'Payment Entry',
+        default: 'Journal Entry',
         onchange: () => {
           let value = this.create_field_group.get_value('document_type');
           let fields = this.create_field_group;
@@ -195,7 +197,7 @@ erpnext.accounts.bank_reconciliation.CreateTab = class CreateTab {
       {
         fieldname: 'reference_date',
         fieldtype: 'Date',
-        label: __('Cheque/Reference Date'),
+        label: __('Cheque/ Reference Date'),
         reqd: 1,
         default: this.transaction.date
       },
@@ -204,6 +206,12 @@ erpnext.accounts.bank_reconciliation.CreateTab = class CreateTab {
         fieldtype: 'Link',
         label: __('Mode of Payment'),
         options: 'Mode of Payment'
+      },
+      {
+        fieldname: 'description',
+        fieldtype: 'Data',
+        label: __('Description'),
+        default: this.transaction.description
       },
       {
         fieldname: 'edit_in_full_page',
@@ -222,7 +230,7 @@ erpnext.accounts.bank_reconciliation.CreateTab = class CreateTab {
         fieldname: 'journal_entry_type',
         fieldtype: 'Select',
         options: `Bank Entry\nJournal Entry\nInter Company Journal Entry\nCash Entry\nCredit Card Entry\nDebit Note\nCredit Note\nContra Entry\nExcise Entry\nWrite Off Entry\nOpening Entry\nDepreciation Entry\nExchange Rate Revaluation\nDeferred Revenue\nDeferred Expense`,
-        default: 'Bank Entry',
+        default: 'Journal Entry',
         depends_on: "eval: doc.document_type == 'Journal Entry'"
       },
       {
@@ -230,6 +238,7 @@ erpnext.accounts.bank_reconciliation.CreateTab = class CreateTab {
         fieldtype: 'Link',
         label: 'Account',
         options: 'Account',
+        reqd: 1,
         get_query: () => {
           return {
             filters: {
@@ -245,8 +254,7 @@ erpnext.accounts.bank_reconciliation.CreateTab = class CreateTab {
         fieldtype: 'Link',
         label: 'Party Type',
         options: 'DocType',
-        reqd: 1,
-        default: party_type,
+        reqd: 0,
         get_query: function () {
           return {
             filters: {
@@ -265,7 +273,13 @@ erpnext.accounts.bank_reconciliation.CreateTab = class CreateTab {
         label: 'Party',
         default: this.transaction.party,
         options: party_type,
-        reqd: 1
+        reqd: 0
+      },
+      {
+        fieldname: 'attachments',
+        fieldtype: 'Attach',
+        label: __('Upload File'),
+        multiple: 1
       },
       {
         fieldname: 'project',

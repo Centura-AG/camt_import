@@ -1,6 +1,6 @@
-frappe.provide('erpnext.accounts.bank_reconciliation');
+frappe.provide('erpnext.accounts.transaction_matching_tool');
 
-erpnext.accounts.bank_reconciliation.ActionsPanelManager = class ActionsPanelManager {
+erpnext.accounts.transaction_matching_tool.ActionsPanelManager = class ActionsPanelManager {
   constructor(opts) {
     Object.assign(this, opts);
     this.make();
@@ -52,7 +52,7 @@ erpnext.accounts.bank_reconciliation.ActionsPanelManager = class ActionsPanelMan
         tab_name: 'details',
         tab_label: __('Details'),
         make_tab: () => {
-          return new erpnext.accounts.bank_reconciliation.DetailsTab({
+          return new erpnext.accounts.transaction_matching_tool.DetailsTab({
             actions_panel: this,
             transaction: this.transaction,
             panel_manager: this.panel_manager
@@ -63,7 +63,7 @@ erpnext.accounts.bank_reconciliation.ActionsPanelManager = class ActionsPanelMan
         tab_name: 'match_voucher',
         tab_label: __('Match Voucher'),
         make_tab: () => {
-          return new erpnext.accounts.bank_reconciliation.MatchTab({
+          return new erpnext.accounts.transaction_matching_tool.MatchTab({
             actions_panel: this,
             transaction: this.transaction,
             panel_manager: this.panel_manager,
@@ -75,7 +75,7 @@ erpnext.accounts.bank_reconciliation.ActionsPanelManager = class ActionsPanelMan
         tab_name: 'create_voucher',
         tab_label: __('Create Voucher'),
         make_tab: () => {
-          return new erpnext.accounts.bank_reconciliation.CreateTab({
+          return new erpnext.accounts.transaction_matching_tool.CreateTab({
             actions_panel: this,
             transaction: this.transaction,
             panel_manager: this.panel_manager,
@@ -141,5 +141,15 @@ erpnext.accounts.bank_reconciliation.ActionsPanelManager = class ActionsPanelMan
       frappe.show_alert({ message: alert_string, indicator: 'green' });
       this.panel_manager.move_to_next_transaction();
     }
+  }
+
+  make_transaction_row(transaction) {
+    return $(`
+		<div class="bank-transaction-row">
+			<!-- other fields -->
+			<div class="description">${transaction.description || ''}</div>
+			<!-- other fields -->
+		</div>
+	`);
   }
 };

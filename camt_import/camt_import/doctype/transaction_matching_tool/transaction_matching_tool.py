@@ -92,6 +92,8 @@ def create_journal_entry_bts(
 	party_type: str = None,
 	party: str = None,
 	allow_edit: bool | str = False,
+	description: str = None,
+	attachments: str = None,
 ):
 	"""Create a new Journal Entry for Reconciling the Bank Transaction"""
 	if isinstance(allow_edit, str):
@@ -147,6 +149,7 @@ def create_journal_entry_bts(
 			"cheque_date": reference_date,
 			"cheque_no": reference_number,
 			"mode_of_payment": mode_of_payment,
+			"user_remark": description
 		}
 	)
 	journal_entry.set(
@@ -170,6 +173,28 @@ def create_journal_entry_bts(
 		],
 	)
 	journal_entry.insert()
+
+	# Handle attachments if provided
+	if attachments:
+		# Convert to list if single file path string
+		if isinstance(attachments, str):
+			try:
+				attachments = json.loads(attachments)
+			except json.JSONDecodeError:
+				attachments = [attachments]
+		
+		if not isinstance(attachments, list):
+			attachments = [attachments]
+		
+		for file_url in attachments:
+			# Create File document link
+			file_doc = frappe.get_doc({
+				"doctype": "File",
+				"file_url": file_url,
+				"attached_to_doctype": "Journal Entry",
+				"attached_to_name": journal_entry.name
+			})
+			file_doc.insert()
 
 	if allow_edit:
 		return journal_entry  # Return saved document

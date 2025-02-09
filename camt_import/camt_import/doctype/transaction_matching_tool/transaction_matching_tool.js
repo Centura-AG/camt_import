@@ -105,7 +105,7 @@ frappe.ui.form.on('Transaction Matching Tool', {
         () => {
           frappe.call({
             method:
-              'erpnext.accounts.doctype.bank_reconciliation_tool.bank_reconciliation_tool.auto_reconcile_vouchers',
+              'camt_import.camt_import.doctype.transaction_matching_tool.transaction_matching_tool.auto_reconcile_vouchers',
             args: {
               bank_account: frm.doc.bank_account,
               from_date: frm.doc.bank_statement_from_date,
@@ -257,12 +257,16 @@ frappe.ui.form.on('Transaction Matching Tool', {
     if (!frm.doc.bank_account) return;
 
     frappe.require(
-      'bank_reconciliation_beta.bundle.js',
+      'transaction_matching_tool.bundle.js',
       () =>
       (frm.panel_manager =
-        new erpnext.accounts.bank_reconciliation.PanelManager({
+        new erpnext.accounts.transaction_matching_tool.PanelManager({
           doc: frm.doc,
-          $wrapper: frm.$reconciliation_area
+          $wrapper: frm.$reconciliation_area,
+          endpoints: {
+            create_journal_entry: 'camt_import.camt_import.doctype.transaction_matching_tool.transaction_matching_tool.create_journal_entry_bts',
+            create_payment_entry: 'camt_import.camt_import.doctype.transaction_matching_tool.transaction_matching_tool.create_payment_entry_bts'
+          }
         }))
     );
   }

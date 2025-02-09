@@ -26,8 +26,8 @@ app_license = "mit"
 # ------------------
 
 # include js, css files in header of desk.html
-app_include_css = "bank_reconciliation_beta.bundle.css"
-app_include_js = "bank_reconciliation_beta.bundle.js"
+app_include_css = "transaction_matching_tool.bundle.css"
+app_include_js = "transaction_matching_tool.bundle.js"
 
 # include js, css files in header of web template
 # web_include_css = "/assets/camt_import/css/camt_import.css"
