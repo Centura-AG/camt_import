@@ -119,23 +119,23 @@ erpnext.accounts.transaction_matching_tool.PanelManager = class PanelManager {
 
     var me = this;
     new frappe.ui.SortSelector({
-        parent: me.$sort_area.find('.sort-by-selector'),
-        args: {
-            sort_by: me.order_by || 'date',
-            sort_order: me.order_direction || 'asc',
-            options: [
-                { fieldname: 'date', label: __('Date') },
-                { fieldname: 'withdrawal', label: __('Withdrawal') },
-                { fieldname: 'deposit', label: __('Deposit') },
-                { fieldname: 'unallocated_amount', label: __('Unallocated Amount') }
-            ]
-        },
-        change: function (sort_by, sort_order) {
-            me.order_by = sort_by || me.order_by || 'date';
-            me.order_direction = sort_order || me.order_direction || 'asc';
-            me.order = me.order_by + ' ' + me.order_direction;
-            me.init_panels();
-        }
+      parent: me.$sort_area.find('.sort-by-selector'),
+      args: {
+        sort_by: me.order_by || 'date',
+        sort_order: me.order_direction || 'asc',
+        options: [
+          { fieldname: 'date', label: __('Date') },
+          { fieldname: 'withdrawal', label: __('Withdrawal') },
+          { fieldname: 'deposit', label: __('Deposit') },
+          { fieldname: 'unallocated_amount', label: __('Unallocated Amount') }
+        ]
+      },
+      change: function (sort_by, sort_order) {
+        me.order_by = sort_by || me.order_by || 'date';
+        me.order_direction = sort_order || me.order_direction || 'asc';
+        me.order = me.order_by + ' ' + me.order_direction;
+        me.init_panels();
+      }
     });
   }
 
@@ -278,25 +278,32 @@ erpnext.accounts.transaction_matching_tool.PanelManager = class PanelManager {
     `).appendTo(this.$panel_wrapper.find('.search-area'));
 
     this.$search_input = this.$search_field.find('input');
-    
-    this.$search_input.on('input', frappe.utils.debounce(() => {
+
+    this.$search_input.on(
+      'input',
+      frappe.utils.debounce(() => {
         me.filter_by_description(me.$search_input.val());
-    }, 300));
+      }, 300)
+    );
   }
 
   filter_by_description(search_text) {
     if (!search_text) {
-        // If search is empty, show all rows
-        this.$panel_wrapper.find('.transaction-row').show();  // Changed from bank-transaction-row to transaction-row
-        return;
+      // If search is empty, show all rows
+      this.$panel_wrapper.find('.transaction-row').show(); // Changed from bank-transaction-row to transaction-row
+      return;
     }
 
     search_text = search_text.toLowerCase();
-    
+
     // Hide/show rows based on description match
-    this.$panel_wrapper.find('.transaction-row').each(function() {  // Changed from bank-transaction-row to transaction-row
-        const description = $(this).find('.description-value').text().toLowerCase();  // Changed to find description-value
-        $(this).toggle(description.includes(search_text));
+    this.$panel_wrapper.find('.transaction-row').each(function () {
+      // Changed from bank-transaction-row to transaction-row
+      const description = $(this)
+        .find('.description-value')
+        .text()
+        .toLowerCase(); // Changed to find description-value
+      $(this).toggle(description.includes(search_text));
     });
   }
 };

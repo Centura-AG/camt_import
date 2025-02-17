@@ -7,7 +7,6 @@
 // 	},
 // });
 
-
 frappe.ui.form.on('Transaction Matching Tool', {
   setup: function (frm) {
     frm.set_query('bank_account', function (doc) {
@@ -35,11 +34,16 @@ frappe.ui.form.on('Transaction Matching Tool', {
 
     if (!frm.doc.bank_account) {
       // get default bank account by filtering for company, is_company_account and is_default
-      frappe.db.get_value('Bank Account', { company: frm.doc.company, is_company_account: 1, is_default: 1 }, 'name', (r) => {
-        if (r.name) {
-          frm.set_value('bank_account', r.name);
+      frappe.db.get_value(
+        'Bank Account',
+        { company: frm.doc.company, is_company_account: 1, is_default: 1 },
+        'name',
+        (r) => {
+          if (r.name) {
+            frm.set_value('bank_account', r.name);
+          }
         }
-      });
+      );
     }
   },
 
@@ -207,7 +211,7 @@ frappe.ui.form.on('Transaction Matching Tool', {
     frm.trigger('get_account_closing_balance');
     frm.trigger('get_bank_transactions');
   },
-  
+
   get_account_opening_balance(frm) {
     if (frm.doc.bank_account && frm.doc.bank_statement_from_date) {
       frappe.call({
@@ -259,15 +263,17 @@ frappe.ui.form.on('Transaction Matching Tool', {
     frappe.require(
       'transaction_matching_tool.bundle.js',
       () =>
-      (frm.panel_manager =
-        new erpnext.accounts.transaction_matching_tool.PanelManager({
-          doc: frm.doc,
-          $wrapper: frm.$reconciliation_area,
-          endpoints: {
-            create_journal_entry: 'camt_import.camt_import.doctype.transaction_matching_tool.transaction_matching_tool.create_journal_entry_bts',
-            create_payment_entry: 'camt_import.camt_import.doctype.transaction_matching_tool.transaction_matching_tool.create_payment_entry_bts'
-          }
-        }))
+        (frm.panel_manager =
+          new erpnext.accounts.transaction_matching_tool.PanelManager({
+            doc: frm.doc,
+            $wrapper: frm.$reconciliation_area,
+            endpoints: {
+              create_journal_entry:
+                'camt_import.camt_import.doctype.transaction_matching_tool.transaction_matching_tool.create_journal_entry_bts',
+              create_payment_entry:
+                'camt_import.camt_import.doctype.transaction_matching_tool.transaction_matching_tool.create_payment_entry_bts'
+            }
+          }))
     );
   }
 });
